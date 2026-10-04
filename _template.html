@@ -25,14 +25,16 @@ a:hover{text-decoration:underline}
 .wrap{max-width:64rem;margin:0 auto;padding:0 1rem 5rem}
 
 /* ---------- 顶栏：手机上只占一行，不再钉住半个屏幕 ---------- */
-#topbar{position:sticky;top:0;z-index:12;background:var(--bg);border-bottom:1px solid var(--line);padding:.5rem 0;display:flex;gap:.5rem;align-items:center}
+#topbar{position:sticky;top:0;z-index:12;background:var(--bg);border-bottom:1px solid var(--line)}
+.tb-inner{max-width:64rem;margin:0 auto;padding:.5rem 1rem;display:flex;gap:.5rem;align-items:center}
+@supports (backdrop-filter:blur(6px)){#topbar{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(160%) blur(8px)}}
 #q{flex:1;min-width:0;padding:.6rem .8rem;font-size:16px;border:1px solid var(--line);border-radius:.6rem;background:var(--card);color:var(--fg)}
 .btn{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:.6rem;padding:.55rem .8rem;font-size:.9rem;cursor:pointer;white-space:nowrap}
 .btn:active{background:var(--accent-soft)}
 
 /* ---------- 左侧目录（桌面常驻，手机抽屉） ---------- */
 .layout{display:grid;grid-template-columns:15rem 1fr;gap:2rem;align-items:start;margin-top:1rem}
-#drawer{background:var(--card);border:1px solid var(--line);border-radius:.7rem;padding:.9rem;position:sticky;top:4rem;max-height:calc(100vh - 5rem);overflow:auto}
+#drawer{background:var(--card);border:1px solid var(--line);border-radius:.7rem;padding:.9rem;position:sticky;top:4.1rem;max-height:calc(100vh - 5rem);overflow:auto}
 #drawer h4{margin:.9rem 0 .4rem;font-size:.78rem;color:var(--muted);font-weight:600;letter-spacing:.04em}
 #drawer h4:first-child{margin-top:0}
 .navlist{list-style:none;margin:0;padding:0}
@@ -87,18 +89,20 @@ mark{background:#fde68a;color:inherit;border-radius:.2rem}
 </style>
 </head>
 <body>
+<div id="topbar">
+  <div class="tb-inner">
+    <button class="btn" id="menubtn" aria-label="打开目录">目录</button>
+    <input id="q" type="search" placeholder="搜：退票、租房押金、劳动仲裁…" autocomplete="off">
+    <button class="btn" id="clearbtn">清空</button>
+  </div>
+</div>
+
 <div class="wrap">
   <header>
     <h1>第一次的人生</h1>
     <p class="sub">每个人都会遇到、却没人教过的那些「第一次」。每条写清：怎么办、容易踩什么坑、依据是哪份官方文件。</p>
     <div class="stats" id="stats"></div>
   </header>
-
-  <div id="topbar">
-    <button class="btn" id="menubtn" aria-label="打开目录">目录</button>
-    <input id="q" type="search" placeholder="搜：退票、租房押金、劳动仲裁…" autocomplete="off">
-    <button class="btn" id="clearbtn">清空</button>
-  </div>
 
   <div class="layout">
     <aside id="drawer">
