@@ -121,7 +121,7 @@ function render(){
     html+='<section id="sec-'+esc(sec.section.slice(0,2))+'" data-sec="'+esc(sec.section)+'"><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
     for(const e of items){
       html+='<article id="'+e.id+'"><h3><a href="#'+e.id+'">'+hl(e.title,q)+'</a></h3>';
-      html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'+(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')+(e.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'<button class="chip copyentry" data-id="'+e.id+'">链接</button></div>';
+      html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'+(e.addition?'<span class="tag" title="'+esc(e.why||'')+'">增补</span>':'')+'+(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')+(e.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'<button class="chip copyentry" data-id="'+e.id+'">链接</button></div>';
       html+='<p class="plain">'+hl(e.body.plain,q)+'</p>';
       html+='<details><summary>怎么做 / 坑在哪 / 依据</summary><ul>'+(e.body.steps||[]).map(s=>'<li>'+hl(s,q)+'</li>').join('')+'</ul>';
       if((e.body.pitfalls||[]).length) html+='<ul class="pit">'+e.body.pitfalls.map(s=>'<li>坑：'+hl(s,q)+'</li>').join('')+'</ul>';
