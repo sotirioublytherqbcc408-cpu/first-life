@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>第一次的人生 · 第一次做事之前，先看这一页</title>
+<meta name="description" content="把每个人都会遇到、却没人教过的「第一次」写成可检索的说明书：出行、金钱、办事、医疗、工作、安全。每条都写清怎么办、容易踩什么坑、依据是哪份官方文件。">
+<style>
+:root{--bg:#fbfbfa;--fg:#1f2328;--muted:#6b7280;--line:#e5e7eb;--card:#fff;--accent:#2563eb;--accent-soft:#eff6ff;--warn:#b45309}
+@media (prefers-color-scheme:dark){:root{--bg:#14161a;--fg:#e6e8eb;--muted:#9aa3ad;--line:#2a2f36;--card:#1b1f24;--accent:#6ea8fe;--accent-soft:#1a2432;--warn:#f0b46b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:52rem;margin:0 auto;padding:0 1.1rem 6rem}
+header{padding:3rem 0 1.5rem}
+h1{font-size:1.9rem;margin:0 0 .5rem;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 1.2rem}
+.stats{display:flex;gap:1.5rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.7rem 0}
+.stats b{color:var(--fg);font-weight:600}
+.controls{position:sticky;top:0;background:var(--bg);padding:.9rem 0;z-index:5;border-bottom:1px solid var(--line)}
+#q{width:100%;padding:.75rem .9rem;font-size:1rem;border:1px solid var(--line);border-radius:.6rem;background:var(--card);color:var(--fg)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.6rem}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:.18rem .7rem;font-size:.82rem;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+section{margin-top:2.2rem}
+h2{font-size:1.15rem;margin:0 0 .2rem}
+.sechint{color:var(--muted);font-size:.85rem;margin:0 0 1rem}
+article{background:var(--card);border:1px solid var(--line);border-radius:.7rem;padding:1rem 1.1rem;margin-bottom:.7rem}
+article h3{margin:0;font-size:1.02rem;line-height:1.5}
+article h3 a{color:inherit}
+.meta{display:flex;gap:.5rem;flex-wrap:wrap;margin:.45rem 0 .6rem;font-size:.76rem;color:var(--muted)}
+.tag{border:1px solid var(--line);border-radius:999px;padding:.05rem .5rem}
+.tag.grade{color:var(--accent);border-color:var(--accent)}
+.plain{margin:.2rem 0 .6rem}
+details{margin-top:.4rem}
+summary{cursor:pointer;color:var(--accent);font-size:.9rem}
+ul{padding-left:1.2rem;margin:.5rem 0}
+li{margin:.2rem 0}
+.pit{color:var(--warn)}
+.src{margin-top:.7rem;padding-top:.6rem;border-top:1px dashed var(--line);font-size:.86rem;color:var(--muted)}
+.src div{margin:.2rem 0}
+footer{margin-top:3rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem}
+.empty{color:var(--muted);padding:2rem 0}
+.addbox{margin-top:.8rem;padding:.8rem 1rem;border:1px dashed var(--line);border-radius:.6rem;font-size:.88rem;color:var(--muted)}
+.addbox ul{margin:.3rem 0 0}
+.about{margin-top:1rem;line-height:1.7}
+mark{background:#fde68a;color:inherit;border-radius:.2rem}
+@media print{.controls,details summary{display:none}article{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>第一次的人生</h1>
+  <p class="sub">每个人都会遇到、却没人教过的那些「第一次」。每条写清：怎么办、容易踩什么坑、依据是哪份官方文件。</p>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div class="controls">
+  <input id="q" type="search" placeholder="搜：候补、退票、医保、租房押金、劳动仲裁…" autocomplete="off">
+  <div class="chips" id="gradechips"></div>
+  <div class="chips" id="secchips"></div>
+</div>
+
+<main id="list"></main>
+
+<footer>
+  <div id="foot"></div>
+  <div style="margin-top:.5rem">内容仅供办事参考，具体以官方最新规定为准。</div>
+</footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const S = DATA.sections;
+const state = {q:'', grades:new Set(), secs:new Set()};
+
+function budget(c){
+  if(!c) return '';
+  const parts=[];
+  if(c.money) parts.push('钱 '+c.money);
+  if(c.time) parts.push('时间 '+c.time);
+  if(c.willpower) parts.push('毅力 '+c.willpower);
+  return parts.join(' · ');
+}
+function text(e){
+  return [e.title,(e.body&&e.body.plain)||'',(e.body&&e.body.steps||[]).join(' '),(e.body&&e.body.pitfalls||[]).join(' '),(e.sources||[]).map(s=>s.name+' '+s.note).join(' '),(e.tags||[]).join(' ')].join(' ').toLowerCase();
+}
+function hl(s,q){
+  if(!q) return esc(s);
+  const i=s.toLowerCase().indexOf(q);
+  if(i<0) return esc(s);
+  return esc(s.slice(0,i))+'<mark>'+esc(s.slice(i,i+q.length))+'</mark>'+esc(s.slice(i+q.length));
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function render(){
+  const q=state.q.trim().toLowerCase();
+  const list=document.getElementById('list');
+  let html='', shown=0;
+  for(const sec of S){
+    if(state.secs.size && !state.secs.has(sec.section)) continue;
+    const items=sec.entries.filter(e=>(!state.grades.size||state.grades.has(e.evidence)) && (!q||text(e).includes(q)));
+    if(!items.length) continue;
+    shown+=items.length;
+    html+='<section><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
+    for(const e of items){
+      html+='<article id="'+e.id+'"><h3><a href="#'+e.id+'">'+hl(e.title,q)+'</a></h3>';
+      html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'+(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')+(e.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>';
+      html+='<p class="plain">'+hl(e.body.plain,q)+'</p>';
+      html+='<details><summary>怎么做 / 坑在哪 / 依据</summary><ul>'+(e.body.steps||[]).map(s=>'<li>'+hl(s,q)+'</li>').join('')+'</ul>';
+      if((e.body.pitfalls||[]).length) html+='<ul class="pit">'+e.body.pitfalls.map(s=>'<li>坑：'+hl(s,q)+'</li>').join('')+'</ul>';
+      html+='<div class="src">依据：'+(e.sources||[]).map(s=>'<div>· <a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.name)+'</a>'+(s.note?' —— '+esc(s.note):'')+'</div>').join('')+'</div>';
+      html+='</details></article>';
+    }
+    if(sec.additions&&sec.additions.length){ html+='<div class="addbox"><b>待补条目（我建议新增，尚未写正文）</b><ul>'+sec.additions.map(a=>'<li>'+esc(a.title)+' —— '+esc(a.why)+'</li>').join('')+'</ul></div>'; }
+    html+='</section>';
+  }
+  list.innerHTML = html || '<p class="empty">没有匹配的条目，换个关键词试试。</p>';
+  document.getElementById('stats').innerHTML='<span><b>'+shown+'</b> 条正在显示</span><span>全站 <b>'+DATA.stats.entries+'</b> 条</span><span><b>'+DATA.stats.sections+'</b> 篇</span><span><b>'+DATA.stats.sources+'</b> 条出处链接</span>';
+}
+
+function chips(){
+  const g=document.getElementById('gradechips');
+  ['A','B','C'].forEach(k=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent='证据 '+k; b.setAttribute('aria-pressed','false');
+    b.onclick=()=>{ state.grades.has(k)?state.grades.delete(k):state.grades.add(k); b.setAttribute('aria-pressed',state.grades.has(k)); render(); };
+    g.appendChild(b);
+  });
+  const s=document.getElementById('secchips');
+  S.forEach(sec=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent=sec.section; b.setAttribute('aria-pressed','false');
+    b.onclick=()=>{ state.secs.has(sec.section)?state.secs.delete(sec.section):state.secs.add(sec.section); b.setAttribute('aria-pressed',state.secs.has(sec.section)); render(); };
+    s.appendChild(b);
+  });
+}
+document.getElementById('q').addEventListener('input',e=>{state.q=e.target.value; render();});
+document.getElementById('foot').innerHTML='<div class="about"><b>关于本站</b><br>把每个人都会遇到、却没人教过的「第一次」整理成可检索的说明书。条目由原始大纲（18 篇 / 1028 条）合并而来，每条都保留了对原始标题的溯源；正文尽量引用官方文件，证据分 A/B/C 三级（A 法规与官方文件，B 官方科普或权威媒体，C 经验性、多家一致）。<br>内容只讲流程与依据，不构成医疗、法律或投资建议，具体以官方最新规定为准。</div><div style="margin-top:.6rem">生成时间 '+DATA.generated+' · 数据内联在本文件里，断网、发给别人都能用。</div>';
+chips(); render();
+</script>
+</body>
+</html>
