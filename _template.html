@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>第一次的人生 · 第一次做事之前，先看这一页</title>
 <meta name="description" content="把每个人都会遇到、却没人教过的「第一次」写成可检索的说明书：出行、金钱、办事、医疗、工作、安全。每条都写清怎么办、容易踩什么坑、依据是哪份官方文件。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="第一次的人生">
+<meta property="og:title" content="第一次的人生 · 第一次做事之前，先看这一页">
+<meta property="og:description" content="每个人都会遇到、却没人教过的那些「第一次」。每条写清：怎么办、容易踩什么坑、依据是哪份官方文件。">
+<meta property="og:url" content="https://thefirst.easymoreai.com/">
+<meta property="og:locale" content="zh_CN">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://thefirst.easymoreai.com/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"第一次的人生","url":"https://thefirst.easymoreai.com/","description":"把每个人都会遇到、却没人教过的「第一次」写成可检索的说明书","inLanguage":"zh-CN"}</script>
 <style>
 :root{--bg:#fbfbfa;--fg:#1f2328;--muted:#6b7280;--line:#e5e7eb;--card:#fff;--accent:#2563eb;--accent-soft:#eff6ff;--warn:#b45309}
 @media (prefers-color-scheme:dark){:root{--bg:#14161a;--fg:#e6e8eb;--muted:#9aa3ad;--line:#2a2f36;--card:#1b1f24;--accent:#6ea8fe;--accent-soft:#1a2432;--warn:#f0b46b}}
@@ -59,6 +68,7 @@ mark{background:#fde68a;color:inherit;border-radius:.2rem}
 
 <div class="controls">
   <input id="q" type="search" placeholder="搜：候补、退票、医保、租房押金、劳动仲裁…" autocomplete="off">
+  <div class="chips"><select id="jump" class="chip" aria-label="跳到某一篇"><option value="">跳到某一篇…</option></select></div>
   <div class="chips" id="gradechips"></div>
   <div class="chips" id="costchips"></div>
   <div class="chips" id="secchips"></div>
@@ -108,7 +118,7 @@ function render(){
     const items=sec.entries.filter(e=>(!state.grades.size||state.grades.has(e.evidence)) && (!state.effort.size||state.effort.has(effort(e))) && (!state.free||isFree(e)) && (!q||text(e).includes(q)));
     if(!items.length) continue;
     shown+=items.length;
-    html+='<section><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
+    html+='<section id="sec-'+esc(sec.section.slice(0,2))+'" data-sec="'+esc(sec.section)+'"><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
     for(const e of items){
       html+='<article id="'+e.id+'"><h3><a href="#'+e.id+'">'+hl(e.title,q)+'</a></h3>';
       html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'+(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')+(e.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'<button class="chip copyentry" data-id="'+e.id+'">链接</button></div>';
@@ -141,6 +151,9 @@ function chips(){
   const fb=document.createElement('button'); fb.className='chip'; fb.textContent='不花钱'; fb.setAttribute('aria-pressed','false');
   fb.onclick=()=>{ state.free=!state.free; fb.setAttribute('aria-pressed',state.free); render(); };
   c.appendChild(fb);
+  const jm=document.getElementById('jump');
+  S.forEach(sec=>{ const o=document.createElement('option'); o.value='sec-'+sec.section.slice(0,2); o.textContent=sec.emoji+' '+sec.section; jm.appendChild(o); });
+  jm.onchange=()=>{ if(!jm.value) return; location.hash=jm.value; jm.value=''; };
   const s=document.getElementById('secchips');
   S.forEach(sec=>{
     const b=document.createElement('button'); b.className='chip'; b.textContent=sec.section; b.setAttribute('aria-pressed','false');
