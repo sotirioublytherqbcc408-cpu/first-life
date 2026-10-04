@@ -60,6 +60,7 @@ mark{background:#fde68a;color:inherit;border-radius:.2rem}
 <div class="controls">
   <input id="q" type="search" placeholder="搜：候补、退票、医保、租房押金、劳动仲裁…" autocomplete="off">
   <div class="chips" id="gradechips"></div>
+  <div class="chips" id="costchips"></div>
   <div class="chips" id="secchips"></div>
   <div class="chips" id="utils"></div>
 </div>
@@ -75,7 +76,9 @@ mark{background:#fde68a;color:inherit;border-radius:.2rem}
 <script>
 const DATA = /*__DATA__*/null;
 const S = DATA.sections;
-const state = {q:'', grades:new Set(), secs:new Set()};
+const state = {q:'', grades:new Set(), secs:new Set(), effort:new Set(), free:false};
+function isFree(e){const m=((e.cost||{}).money||'').trim();return /^0|^不花|免费|0 ?元/.test(m);}
+function effort(e){return ((e.cost||{}).willpower||'').trim();}
 
 function budget(c){
   if(!c) return '';
@@ -102,7 +105,7 @@ function render(){
   let html='', shown=0;
   for(const sec of S){
     if(state.secs.size && !state.secs.has(sec.section)) continue;
-    const items=sec.entries.filter(e=>(!state.grades.size||state.grades.has(e.evidence)) && (!q||text(e).includes(q)));
+    const items=sec.entries.filter(e=>(!state.grades.size||state.grades.has(e.evidence)) && (!state.effort.size||state.effort.has(effort(e))) && (!state.free||isFree(e)) && (!q||text(e).includes(q)));
     if(!items.length) continue;
     shown+=items.length;
     html+='<section><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
@@ -129,6 +132,15 @@ function chips(){
     b.onclick=()=>{ state.grades.has(k)?state.grades.delete(k):state.grades.add(k); b.setAttribute('aria-pressed',state.grades.has(k)); render(); };
     g.appendChild(b);
   });
+  const c=document.getElementById('costchips');
+  ['低','中','高'].forEach(k=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent='毅力 '+k; b.setAttribute('aria-pressed','false');
+    b.onclick=()=>{ state.effort.has(k)?state.effort.delete(k):state.effort.add(k); b.setAttribute('aria-pressed',state.effort.has(k)); render(); };
+    c.appendChild(b);
+  });
+  const fb=document.createElement('button'); fb.className='chip'; fb.textContent='不花钱'; fb.setAttribute('aria-pressed','false');
+  fb.onclick=()=>{ state.free=!state.free; fb.setAttribute('aria-pressed',state.free); render(); };
+  c.appendChild(fb);
   const s=document.getElementById('secchips');
   S.forEach(sec=>{
     const b=document.createElement('button'); b.className='chip'; b.textContent=sec.section; b.setAttribute('aria-pressed','false');
