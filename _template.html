@@ -164,6 +164,19 @@ function chips(){
 document.getElementById('q').addEventListener('input',e=>{state.q=e.target.value; render();});
 document.getElementById('foot').innerHTML='<div class="about"><b>关于本站</b><br>把每个人都会遇到、却没人教过的「第一次」整理成可检索的说明书。条目由原始大纲（18 篇 / 1028 条）合并而来，每条都保留了对原始标题的溯源；正文尽量引用官方文件，证据分 A/B/C 三级（A 法规与官方文件，B 官方科普或权威媒体，C 经验性、多家一致）。<br>内容只讲流程与依据，不构成医疗、法律或投资建议，具体以官方最新规定为准。</div><div style="margin-top:.6rem">生成时间 '+DATA.generated+' · 数据内联在本文件里，断网、发给别人都能用。</div>';
 chips(); render();
+// 深链支持：带 #条目id 打开时，渲染完再滚过去并展开该条（否则浏览器在元素还没生成时就找过了）
+function gotoHash(){
+  const id=decodeURIComponent(location.hash.slice(1));
+  if(!id) return;
+  const el=document.getElementById(id);
+  if(!el) return;
+  const d=el.querySelector('details'); if(d) d.open=true;
+  el.scrollIntoView({block:'start'});
+  el.style.transition='background .6s'; el.style.background='var(--accent-soft)';
+  setTimeout(()=>{ el.style.background=''; }, 1600);
+}
+gotoHash();
+window.addEventListener('hashchange', gotoHash);
 const utils=document.getElementById('utils');
 const tb=document.createElement('button'); tb.className='chip'; tb.textContent='展开全部'; let allOpen=false;
 tb.onclick=()=>{ allOpen=!allOpen; document.querySelectorAll('article details').forEach(d=>d.open=allOpen); tb.textContent=allOpen?'收起全部':'展开全部'; };
