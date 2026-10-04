@@ -25,7 +25,8 @@ a:hover{text-decoration:underline}
 .wrap{max-width:64rem;margin:0 auto;padding:0 1rem 5rem}
 
 /* ---------- 顶栏：手机上只占一行，不再钉住半个屏幕 ---------- */
-#topbar{position:sticky;top:0;z-index:12;background:var(--bg);border-bottom:1px solid var(--line)}
+#topbar{position:sticky;top:0;z-index:12;background:var(--bg);border-bottom:1px solid var(--line);transition:transform .22s ease}
+#topbar.hidden{transform:translateY(-104%)}
 .tb-inner{max-width:64rem;margin:0 auto;padding:.5rem 1rem;display:flex;gap:.5rem;align-items:center}
 @supports (backdrop-filter:blur(6px)){#topbar{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(160%) blur(8px)}}
 #q{flex:1;min-width:0;padding:.6rem .8rem;font-size:16px;border:1px solid var(--line);border-radius:.6rem;background:var(--card);color:var(--fg)}
@@ -265,6 +266,22 @@ function spy(){
   },{rootMargin:'-15% 0px -75% 0px'});
   document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
 }
+
+/* 向下滑收起顶栏，向上滑立刻露出：手机上不再一直占着那一行 */
+(function(){
+  const bar=document.getElementById('topbar');
+  let lastY=window.scrollY, ticking=false;
+  window.addEventListener('scroll',()=>{
+    if(ticking) return; ticking=true;
+    requestAnimationFrame(()=>{
+      const y=window.scrollY, dy=y-lastY;
+      if(dy>6 && y>140) bar.classList.add('hidden');
+      else if(dy<-6) bar.classList.remove('hidden');
+      if(y<40) bar.classList.remove('hidden');
+      lastY=y; ticking=false;
+    });
+  },{passive:true});
+})();
 
 document.getElementById('foot').innerHTML='<div><b>关于本站</b><br>把每个人都会遇到、却没人教过的「第一次」整理成可检索的说明书。条目由原始大纲（18 篇 / 1028 条）合并而来，每条保留了溯源；正文尽量引用官方文件，证据分 A/B/C 三级（A 法规与官方文件，B 官方科普或权威媒体，C 经验性、多家一致）。<br>只讲流程与依据，不构成医疗、法律或投资建议，具体以官方最新规定为准。</div><div style="margin-top:.6rem">生成时间 '+DATA.generated+' · 数据内联在本文件，断网、转发都能用。</div>';
 
