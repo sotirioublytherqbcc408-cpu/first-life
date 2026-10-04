@@ -157,7 +157,7 @@ function render(){
     if(!items.length) continue;
     shown+=items.length;
     const sid='sec-'+sec.section.slice(0,2);
-    html+='<section id="'+sid+'"><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
+    html+='<section id="'+sid+'"><h2>'+esc(sec.label||sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
     for(const e of items){
       html+='<article id="'+e.id+'"><h3><a href="#'+e.id+'">'+hl(e.title,q)+'</a></h3>';
       html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'
@@ -182,7 +182,7 @@ function buildSidebar(){
   S.forEach(sec=>{
     const sid='sec-'+sec.section.slice(0,2);
     const li=document.createElement('li');
-    li.innerHTML='<a href="#'+sid+'" data-sec="'+esc(sec.section)+'"><span>'+esc(sec.emoji+' '+sec.section.slice(3))+'</span><span class="n">'+sec.entries.length+'</span></a>';
+    li.innerHTML='<a href="#'+sid+'" data-sec="'+esc(sec.section)+'"><span>'+esc(sec.label||sec.section)+'</span><span class="n">'+sec.entries.length+'</span></a>';
     ul.appendChild(li);
   });
   const gc=document.getElementById('gradechips');
