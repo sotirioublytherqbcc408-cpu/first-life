@@ -18,175 +18,254 @@
 :root{--bg:#fbfbfa;--fg:#1f2328;--muted:#6b7280;--line:#e5e7eb;--card:#fff;--accent:#2563eb;--accent-soft:#eff6ff;--warn:#b45309}
 @media (prefers-color-scheme:dark){:root{--bg:#14161a;--fg:#e6e8eb;--muted:#9aa3ad;--line:#2a2f36;--card:#1b1f24;--accent:#6ea8fe;--accent-soft:#1a2432;--warn:#f0b46b}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;-webkit-text-size-adjust:100%}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
-.wrap{max-width:52rem;margin:0 auto;padding:0 1.1rem 6rem}
-header{padding:3rem 0 1.5rem}
-h1{font-size:1.9rem;margin:0 0 .5rem;letter-spacing:-.01em}
-.sub{color:var(--muted);margin:0 0 1.2rem}
-.stats{display:flex;gap:1.5rem;flex-wrap:wrap;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.7rem 0}
-.stats b{color:var(--fg);font-weight:600}
-.controls{position:sticky;top:0;background:var(--bg);padding:.9rem 0;z-index:5;border-bottom:1px solid var(--line)}
-#q{width:100%;padding:.75rem .9rem;font-size:1rem;border:1px solid var(--line);border-radius:.6rem;background:var(--card);color:var(--fg)}
-.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.6rem}
-.chip{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:.18rem .7rem;font-size:.82rem;cursor:pointer}
+.wrap{max-width:64rem;margin:0 auto;padding:0 1rem 5rem}
+
+/* ---------- 顶栏：手机上只占一行，不再钉住半个屏幕 ---------- */
+#topbar{position:sticky;top:0;z-index:12;background:var(--bg);border-bottom:1px solid var(--line);padding:.5rem 0;display:flex;gap:.5rem;align-items:center}
+#q{flex:1;min-width:0;padding:.6rem .8rem;font-size:16px;border:1px solid var(--line);border-radius:.6rem;background:var(--card);color:var(--fg)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:.6rem;padding:.55rem .8rem;font-size:.9rem;cursor:pointer;white-space:nowrap}
+.btn:active{background:var(--accent-soft)}
+
+/* ---------- 左侧目录（桌面常驻，手机抽屉） ---------- */
+.layout{display:grid;grid-template-columns:15rem 1fr;gap:2rem;align-items:start;margin-top:1rem}
+#drawer{background:var(--card);border:1px solid var(--line);border-radius:.7rem;padding:.9rem;position:sticky;top:4rem;max-height:calc(100vh - 5rem);overflow:auto}
+#drawer h4{margin:.9rem 0 .4rem;font-size:.78rem;color:var(--muted);font-weight:600;letter-spacing:.04em}
+#drawer h4:first-child{margin-top:0}
+.navlist{list-style:none;margin:0;padding:0}
+.navlist li{margin:.1rem 0}
+.navlist a{display:flex;justify-content:space-between;gap:.4rem;padding:.3rem .45rem;border-radius:.4rem;color:var(--fg);font-size:.9rem}
+.navlist a:hover{background:var(--accent-soft);text-decoration:none}
+.navlist a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.navlist .n{color:var(--muted);font-size:.78rem}
+.chips{display:flex;gap:.35rem;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:999px;padding:.15rem .6rem;font-size:.8rem;cursor:pointer;line-height:1.6}
 .chip[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-section{margin-top:2.2rem}
-h2{font-size:1.15rem;margin:0 0 .2rem}
-.sechint{color:var(--muted);font-size:.85rem;margin:0 0 1rem}
-article{background:var(--card);border:1px solid var(--line);border-radius:.7rem;padding:1rem 1.1rem;margin-bottom:.7rem}
-article h3{margin:0;font-size:1.02rem;line-height:1.5}
+#kwcloud{display:flex;flex-wrap:wrap;gap:.3rem}
+#overlay{display:none}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr;gap:0}
+  #drawer{position:fixed;left:0;top:0;bottom:0;width:18rem;max-width:86vw;border-radius:0;max-height:none;z-index:30;transform:translateX(-102%);transition:transform .22s ease}
+  #drawer.open{transform:none}
+  #overlay{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s;z-index:25}
+  #overlay.show{opacity:1;pointer-events:auto}
+  header h1{font-size:1.45rem}
+}
+
+header{padding:1.4rem 0 .6rem}
+h1{font-size:1.8rem;margin:0 0 .4rem;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 .8rem;font-size:.95rem}
+.stats{display:flex;gap:1rem;flex-wrap:wrap;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.5rem 0}
+.stats b{color:var(--fg)}
+
+section{margin-top:2rem;scroll-margin-top:4.2rem}
+h2{font-size:1.12rem;margin:0 0 .2rem}
+.sechint{color:var(--muted);font-size:.84rem;margin:0 0 .8rem}
+article{background:var(--card);border:1px solid var(--line);border-radius:.7rem;padding:.9rem 1rem;margin-bottom:.6rem;scroll-margin-top:4.2rem}
+article h3{margin:0;font-size:1rem;line-height:1.5}
 article h3 a{color:inherit}
-.meta{display:flex;gap:.5rem;flex-wrap:wrap;margin:.45rem 0 .6rem;font-size:.76rem;color:var(--muted)}
-.tag{border:1px solid var(--line);border-radius:999px;padding:.05rem .5rem}
+.meta{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin:.4rem 0 .5rem;font-size:.74rem;color:var(--muted)}
+.tag{border:1px solid var(--line);border-radius:999px;padding:.05rem .5rem;white-space:nowrap}
 .tag.grade{color:var(--accent);border-color:var(--accent)}
-.plain{margin:.2rem 0 .6rem}
-details{margin-top:.4rem}
+.tag.tap{cursor:pointer}
+.plain{margin:.2rem 0 .5rem}
+details{margin-top:.3rem}
 summary{cursor:pointer;color:var(--accent);font-size:.9rem}
-ul{padding-left:1.2rem;margin:.5rem 0}
+ul{padding-left:1.1rem;margin:.45rem 0}
 li{margin:.2rem 0}
 .pit{color:var(--warn)}
-.src{margin-top:.7rem;padding-top:.6rem;border-top:1px dashed var(--line);font-size:.86rem;color:var(--muted)}
+.src{margin-top:.6rem;padding-top:.55rem;border-top:1px dashed var(--line);font-size:.85rem;color:var(--muted);word-break:break-all}
 .src div{margin:.2rem 0}
-footer{margin-top:3rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem}
+footer{margin-top:2.5rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:1rem}
 .empty{color:var(--muted);padding:2rem 0}
-.addbox{margin-top:.8rem;padding:.8rem 1rem;border:1px dashed var(--line);border-radius:.6rem;font-size:.88rem;color:var(--muted)}
-.addbox ul{margin:.3rem 0 0}
-.about{margin-top:1rem;line-height:1.7}
 mark{background:#fde68a;color:inherit;border-radius:.2rem}
-@media print{.controls,details summary{display:none}article{break-inside:avoid}}
+.copyentry{margin-left:auto}
+@media print{#drawer,#topbar,details summary{display:none}article{break-inside:avoid}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header>
-  <h1>第一次的人生</h1>
-  <p class="sub">每个人都会遇到、却没人教过的那些「第一次」。每条写清：怎么办、容易踩什么坑、依据是哪份官方文件。</p>
-  <div class="stats" id="stats"></div>
-</header>
+  <header>
+    <h1>第一次的人生</h1>
+    <p class="sub">每个人都会遇到、却没人教过的那些「第一次」。每条写清：怎么办、容易踩什么坑、依据是哪份官方文件。</p>
+    <div class="stats" id="stats"></div>
+  </header>
 
-<div class="controls">
-  <input id="q" type="search" placeholder="搜：候补、退票、医保、租房押金、劳动仲裁…" autocomplete="off">
-  <div class="chips"><select id="jump" class="chip" aria-label="跳到某一篇"><option value="">跳到某一篇…</option></select></div>
-  <div class="chips" id="gradechips"></div>
-  <div class="chips" id="costchips"></div>
-  <div class="chips" id="secchips"></div>
-  <div class="chips" id="utils"></div>
+  <div id="topbar">
+    <button class="btn" id="menubtn" aria-label="打开目录">☰ 目录</button>
+    <input id="q" type="search" placeholder="搜：退票、租房押金、劳动仲裁…" autocomplete="off">
+    <button class="btn" id="clearbtn">清空</button>
+  </div>
+
+  <div class="layout">
+    <aside id="drawer">
+      <h4>篇章（点一下跳过去）</h4>
+      <ul class="navlist" id="seclist"></ul>
+      <h4>证据等级</h4>
+      <div class="chips" id="gradechips"></div>
+      <h4>花多少力气</h4>
+      <div class="chips" id="costchips"></div>
+      <h4>热门关键词</h4>
+      <div id="kwcloud"></div>
+    </aside>
+    <main id="list"></main>
+  </div>
+
+  <footer>
+    <div id="foot"></div>
+    <div style="margin-top:.5rem">内容仅供办事参考，具体以官方最新规定为准。</div>
+  </footer>
 </div>
-
-<main id="list"></main>
-
-<footer>
-  <div id="foot"></div>
-  <div style="margin-top:.5rem">内容仅供办事参考，具体以官方最新规定为准。</div>
-</footer>
-</div>
+<div id="overlay"></div>
 
 <script>
 const DATA = /*__DATA__*/null;
 const S = DATA.sections;
 const state = {q:'', grades:new Set(), secs:new Set(), effort:new Set(), free:false};
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function budget(c){ if(!c) return '';
+  const p=[]; if(c.money) p.push('钱 '+c.money); if(c.time) p.push('时间 '+c.time); if(c.willpower) p.push('毅力 '+c.willpower); return p.join(' · ');
+}
+function text(e){ const b=e.body||{};
+  return [e.title,b.plain||'',(b.steps||[]).join(' '),(b.pitfalls||[]).join(' '),(e.sources||[]).map(s=>s.name+' '+s.note).join(' '),(e.tags||[]).join(' ')].join(' ').toLowerCase();
+}
+function hl(s,q){ if(!q) return esc(s);
+  const i=String(s).toLowerCase().indexOf(q); if(i<0) return esc(s);
+  return esc(String(s).slice(0,i))+'<mark>'+esc(String(s).slice(i,i+q.length))+'</mark>'+esc(String(s).slice(i+q.length));
+}
 function isFree(e){const m=((e.cost||{}).money||'').trim();return /^0|^不花|免费|0 ?元/.test(m);}
 function effort(e){return ((e.cost||{}).willpower||'').trim();}
 
-function budget(c){
-  if(!c) return '';
-  const parts=[];
-  if(c.money) parts.push('钱 '+c.money);
-  if(c.time) parts.push('时间 '+c.time);
-  if(c.willpower) parts.push('毅力 '+c.willpower);
-  return parts.join(' · ');
+function visible(e,q){
+  if(state.grades.size && !state.grades.has(e.evidence)) return false;
+  if(state.effort.size && !state.effort.has(effort(e))) return false;
+  if(state.free && !isFree(e)) return false;
+  if(q && !text(e).includes(q)) return false;
+  return true;
 }
-function text(e){
-  return [e.title,(e.body&&e.body.plain)||'',(e.body&&e.body.steps||[]).join(' '),(e.body&&e.body.pitfalls||[]).join(' '),(e.sources||[]).map(s=>s.name+' '+s.note).join(' '),(e.tags||[]).join(' ')].join(' ').toLowerCase();
-}
-function hl(s,q){
-  if(!q) return esc(s);
-  const i=s.toLowerCase().indexOf(q);
-  if(i<0) return esc(s);
-  return esc(s.slice(0,i))+'<mark>'+esc(s.slice(i,i+q.length))+'</mark>'+esc(s.slice(i+q.length));
-}
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 function render(){
   const q=state.q.trim().toLowerCase();
-  const list=document.getElementById('list');
   let html='', shown=0;
   for(const sec of S){
     if(state.secs.size && !state.secs.has(sec.section)) continue;
-    const items=sec.entries.filter(e=>(!state.grades.size||state.grades.has(e.evidence)) && (!state.effort.size||state.effort.has(effort(e))) && (!state.free||isFree(e)) && (!q||text(e).includes(q)));
+    const items=sec.entries.filter(e=>visible(e,q));
     if(!items.length) continue;
     shown+=items.length;
-    html+='<section id="sec-'+esc(sec.section.slice(0,2))+'" data-sec="'+esc(sec.section)+'"><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
+    const sid='sec-'+sec.section.slice(0,2);
+    html+='<section id="'+sid+'"><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
     for(const e of items){
       html+='<article id="'+e.id+'"><h3><a href="#'+e.id+'">'+hl(e.title,q)+'</a></h3>';
-      html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'+(e.addition?'<span class="tag" title="'+esc(e.why||'')+'">增补</span>':'')+(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')+(e.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'<button class="chip copyentry" data-id="'+e.id+'">链接</button></div>';
+      html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'
+        +(e.addition?'<span class="tag" title="'+esc(e.why||'')+'">增补</span>':'')
+        +(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')
+        +(e.tags||[]).slice(0,4).map(t=>'<span class="tag tap" data-kw="'+esc(t)+'">'+esc(t)+'</span>').join('')
+        +'<button class="chip copyentry" data-id="'+e.id+'">链接</button></div>';
       html+='<p class="plain">'+hl(e.body.plain,q)+'</p>';
       html+='<details><summary>怎么做 / 坑在哪 / 依据</summary><ul>'+(e.body.steps||[]).map(s=>'<li>'+hl(s,q)+'</li>').join('')+'</ul>';
       if((e.body.pitfalls||[]).length) html+='<ul class="pit">'+e.body.pitfalls.map(s=>'<li>坑：'+hl(s,q)+'</li>').join('')+'</ul>';
       html+='<div class="src">依据：'+(e.sources||[]).map(s=>'<div>· <a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.name)+'</a>'+(s.note?' —— '+esc(s.note):'')+'</div>').join('')+'</div>';
       html+='</details></article>';
     }
-    if(sec.additions&&sec.additions.length){ html+='<div class="addbox"><b>待补条目（我建议新增，尚未写正文）</b><ul>'+sec.additions.map(a=>'<li>'+esc(a.title)+' —— '+esc(a.why)+'</li>').join('')+'</ul></div>'; }
     html+='</section>';
   }
-  list.innerHTML = html || '<p class="empty">没有匹配的条目，换个关键词试试。</p>';
+  document.getElementById('list').innerHTML = html || '<p class="empty">没有匹配的条目。换个词，或在左侧清空筛选。</p>';
   document.getElementById('stats').innerHTML='<span><b>'+shown+'</b> 条正在显示</span><span>全站 <b>'+DATA.stats.entries+'</b> 条</span><span><b>'+DATA.stats.sections+'</b> 篇</span><span><b>'+DATA.stats.sources+'</b> 条出处链接</span>';
 }
 
-function chips(){
-  const g=document.getElementById('gradechips');
+function buildSidebar(){
+  const ul=document.getElementById('seclist');
+  S.forEach(sec=>{
+    const sid='sec-'+sec.section.slice(0,2);
+    const li=document.createElement('li');
+    li.innerHTML='<a href="#'+sid+'" data-sec="'+esc(sec.section)+'"><span>'+esc(sec.emoji+' '+sec.section.slice(3))+'</span><span class="n">'+sec.entries.length+'</span></a>';
+    ul.appendChild(li);
+  });
+  const gc=document.getElementById('gradechips');
   ['A','B','C'].forEach(k=>{
     const b=document.createElement('button'); b.className='chip'; b.textContent='证据 '+k; b.setAttribute('aria-pressed','false');
     b.onclick=()=>{ state.grades.has(k)?state.grades.delete(k):state.grades.add(k); b.setAttribute('aria-pressed',state.grades.has(k)); render(); };
-    g.appendChild(b);
+    gc.appendChild(b);
   });
-  const c=document.getElementById('costchips');
+  const cc=document.getElementById('costchips');
   ['低','中','高'].forEach(k=>{
     const b=document.createElement('button'); b.className='chip'; b.textContent='毅力 '+k; b.setAttribute('aria-pressed','false');
     b.onclick=()=>{ state.effort.has(k)?state.effort.delete(k):state.effort.add(k); b.setAttribute('aria-pressed',state.effort.has(k)); render(); };
-    c.appendChild(b);
+    cc.appendChild(b);
   });
   const fb=document.createElement('button'); fb.className='chip'; fb.textContent='不花钱'; fb.setAttribute('aria-pressed','false');
   fb.onclick=()=>{ state.free=!state.free; fb.setAttribute('aria-pressed',state.free); render(); };
-  c.appendChild(fb);
-  const jm=document.getElementById('jump');
-  S.forEach(sec=>{ const o=document.createElement('option'); o.value='sec-'+sec.section.slice(0,2); o.textContent=sec.emoji+' '+sec.section; jm.appendChild(o); });
-  jm.onchange=()=>{ if(!jm.value) return; location.hash=jm.value; jm.value=''; };
-  const s=document.getElementById('secchips');
-  S.forEach(sec=>{
-    const b=document.createElement('button'); b.className='chip'; b.textContent=sec.section; b.setAttribute('aria-pressed','false');
-    b.onclick=()=>{ state.secs.has(sec.section)?state.secs.delete(sec.section):state.secs.add(sec.section); b.setAttribute('aria-pressed',state.secs.has(sec.section)); render(); };
-    s.appendChild(b);
+  cc.appendChild(fb);
+  // 热门关键词：按出现次数取前 24 个 tag
+  const freq={};
+  S.forEach(s=>s.entries.forEach(e=>(e.tags||[]).forEach(t=>{ freq[t]=(freq[t]||0)+1; })));
+  const kc=document.getElementById('kwcloud');
+  Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,24).forEach(([t,n])=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent=t; b.title=n+' 条';
+    b.onclick=()=>{ document.getElementById('q').value=t; state.q=t; render(); closeDrawer(); window.scrollTo({top:0}); };
+    kc.appendChild(b);
   });
 }
-document.getElementById('q').addEventListener('input',e=>{state.q=e.target.value; render();});
-document.getElementById('foot').innerHTML='<div class="about"><b>关于本站</b><br>把每个人都会遇到、却没人教过的「第一次」整理成可检索的说明书。条目由原始大纲（18 篇 / 1028 条）合并而来，每条都保留了对原始标题的溯源；正文尽量引用官方文件，证据分 A/B/C 三级（A 法规与官方文件，B 官方科普或权威媒体，C 经验性、多家一致）。<br>内容只讲流程与依据，不构成医疗、法律或投资建议，具体以官方最新规定为准。</div><div style="margin-top:.6rem">生成时间 '+DATA.generated+' · 数据内联在本文件里，断网、发给别人都能用。</div>';
-chips(); render();
-// 深链支持：带 #条目id 打开时，渲染完再滚过去并展开该条（否则浏览器在元素还没生成时就找过了）
+
+/* 抽屉开关（手机） */
+const drawer=document.getElementById('drawer'), overlay=document.getElementById('overlay');
+function openDrawer(){ drawer.classList.add('open'); overlay.classList.add('show'); }
+function closeDrawer(){ drawer.classList.remove('open'); overlay.classList.remove('show'); }
+document.getElementById('menubtn').onclick=()=>drawer.classList.contains('open')?closeDrawer():openDrawer();
+overlay.onclick=closeDrawer;
+drawer.addEventListener('click',e=>{ if(e.target.closest('a')) closeDrawer(); });
+
+/* 搜索与清空 */
+document.getElementById('q').addEventListener('input',e=>{ state.q=e.target.value; render(); });
+document.getElementById('clearbtn').onclick=()=>{
+  state.q=''; state.grades.clear(); state.secs.clear(); state.effort.clear(); state.free=false;
+  document.getElementById('q').value='';
+  document.querySelectorAll('.chip[aria-pressed]').forEach(c=>c.setAttribute('aria-pressed','false'));
+  render();
+};
+
+/* 卡片上的关键词 / 复制链接 */
+document.addEventListener('click', async ev=>{
+  const t=ev.target;
+  if(!t||!t.classList) return;
+  if(t.classList.contains('tag')&&t.dataset.kw){
+    document.getElementById('q').value=t.dataset.kw; state.q=t.dataset.kw; render(); window.scrollTo({top:0}); return;
+  }
+  if(t.classList.contains('copyentry')){
+    const url=location.href.split('#')[0]+'#'+t.getAttribute('data-id');
+    try{ await navigator.clipboard.writeText(url); const o=t.textContent; t.textContent='已复制'; setTimeout(()=>t.textContent=o,1200);}catch(e){}
+  }
+});
+
+/* 深链：带 #条目id 打开时，渲染完再定位并展开 */
 function gotoHash(){
-  const id=decodeURIComponent(location.hash.slice(1));
-  if(!id) return;
-  const el=document.getElementById(id);
-  if(!el) return;
+  const id=decodeURIComponent(location.hash.slice(1)); if(!id) return;
+  const el=document.getElementById(id); if(!el) return;
   const d=el.querySelector('details'); if(d) d.open=true;
   el.scrollIntoView({block:'start'});
   el.style.transition='background .6s'; el.style.background='var(--accent-soft)';
-  setTimeout(()=>{ el.style.background=''; }, 1600);
+  setTimeout(()=>{ el.style.background=''; },1600);
 }
-gotoHash();
-window.addEventListener('hashchange', gotoHash);
-const utils=document.getElementById('utils');
-const tb=document.createElement('button'); tb.className='chip'; tb.textContent='展开全部'; let allOpen=false;
-tb.onclick=()=>{ allOpen=!allOpen; document.querySelectorAll('article details').forEach(d=>d.open=allOpen); tb.textContent=allOpen?'收起全部':'展开全部'; };
-utils.appendChild(tb);
-document.addEventListener('click', async ev=>{
-  const t=ev.target;
-  if(!t||!t.classList||!t.classList.contains('copyentry')) return;
-  const url=location.href.split('#')[0]+'#'+t.getAttribute('data-id');
-  try{ await navigator.clipboard.writeText(url); const o=t.textContent; t.textContent='已复制'; setTimeout(()=>t.textContent=o,1200);}catch(e){}
-});
+
+/* 滚动时高亮左侧当前篇章 */
+function spy(){
+  const links=[...document.querySelectorAll('#seclist a')];
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(en=>{ if(!en.isIntersecting) return;
+      links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+en.target.id));
+    });
+  },{rootMargin:'-15% 0px -75% 0px'});
+  document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+}
+
+document.getElementById('foot').innerHTML='<div><b>关于本站</b><br>把每个人都会遇到、却没人教过的「第一次」整理成可检索的说明书。条目由原始大纲（18 篇 / 1028 条）合并而来，每条保留了溯源；正文尽量引用官方文件，证据分 A/B/C 三级（A 法规与官方文件，B 官方科普或权威媒体，C 经验性、多家一致）。<br>只讲流程与依据，不构成医疗、法律或投资建议，具体以官方最新规定为准。</div><div style="margin-top:.6rem">生成时间 '+DATA.generated+' · 数据内联在本文件，断网、转发都能用。</div>';
+
+buildSidebar(); render(); spy(); gotoHash();
+window.addEventListener('hashchange', ()=>{ gotoHash(); });
 </script>
 </body>
 </html>
