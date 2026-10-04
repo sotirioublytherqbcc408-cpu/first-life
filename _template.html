@@ -61,6 +61,7 @@ mark{background:#fde68a;color:inherit;border-radius:.2rem}
   <input id="q" type="search" placeholder="搜：候补、退票、医保、租房押金、劳动仲裁…" autocomplete="off">
   <div class="chips" id="gradechips"></div>
   <div class="chips" id="secchips"></div>
+  <div class="chips" id="utils"></div>
 </div>
 
 <main id="list"></main>
@@ -107,7 +108,7 @@ function render(){
     html+='<section><h2>'+esc(sec.emoji+' '+sec.section)+'</h2><p class="sechint">'+items.length+' 条 · 原大纲 '+sec.source_count+' 条合并而来</p>';
     for(const e of items){
       html+='<article id="'+e.id+'"><h3><a href="#'+e.id+'">'+hl(e.title,q)+'</a></h3>';
-      html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'+(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')+(e.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>';
+      html+='<div class="meta"><span class="tag grade">证据 '+esc(e.evidence)+'</span>'+(budget(e.cost)?'<span class="tag">'+esc(budget(e.cost))+'</span>':'')+(e.tags||[]).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'<button class="chip copyentry" data-id="'+e.id+'">链接</button></div>';
       html+='<p class="plain">'+hl(e.body.plain,q)+'</p>';
       html+='<details><summary>怎么做 / 坑在哪 / 依据</summary><ul>'+(e.body.steps||[]).map(s=>'<li>'+hl(s,q)+'</li>').join('')+'</ul>';
       if((e.body.pitfalls||[]).length) html+='<ul class="pit">'+e.body.pitfalls.map(s=>'<li>坑：'+hl(s,q)+'</li>').join('')+'</ul>';
@@ -138,6 +139,16 @@ function chips(){
 document.getElementById('q').addEventListener('input',e=>{state.q=e.target.value; render();});
 document.getElementById('foot').innerHTML='<div class="about"><b>关于本站</b><br>把每个人都会遇到、却没人教过的「第一次」整理成可检索的说明书。条目由原始大纲（18 篇 / 1028 条）合并而来，每条都保留了对原始标题的溯源；正文尽量引用官方文件，证据分 A/B/C 三级（A 法规与官方文件，B 官方科普或权威媒体，C 经验性、多家一致）。<br>内容只讲流程与依据，不构成医疗、法律或投资建议，具体以官方最新规定为准。</div><div style="margin-top:.6rem">生成时间 '+DATA.generated+' · 数据内联在本文件里，断网、发给别人都能用。</div>';
 chips(); render();
+const utils=document.getElementById('utils');
+const tb=document.createElement('button'); tb.className='chip'; tb.textContent='展开全部'; let allOpen=false;
+tb.onclick=()=>{ allOpen=!allOpen; document.querySelectorAll('article details').forEach(d=>d.open=allOpen); tb.textContent=allOpen?'收起全部':'展开全部'; };
+utils.appendChild(tb);
+document.addEventListener('click', async ev=>{
+  const t=ev.target;
+  if(!t||!t.classList||!t.classList.contains('copyentry')) return;
+  const url=location.href.split('#')[0]+'#'+t.getAttribute('data-id');
+  try{ await navigator.clipboard.writeText(url); const o=t.textContent; t.textContent='已复制'; setTimeout(()=>t.textContent=o,1200);}catch(e){}
+});
 </script>
 </body>
 </html>
